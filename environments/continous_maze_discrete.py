@@ -1,0 +1,96 @@
+import numpy as np
+from pybrain.utilities import Named
+from pybrain.rl.environments.environment import Environment
+from scipy import clip
+import random
+import matplotlib.pyplot as plt
+class CTS_Maze(Environment, Named):
+	
+    indim=2
+    outdim=1
+    discreteStates = False
+    discreteActions = True
+    #numActions = 8
+    # current state
+    perseus=np.array([0,0],dtype=float)
+    # default initial state
+    initPos = np.array([0,0],dtype=float)
+    timesteps=0
+
+    actions=[0,45,90,135,180,225,270,315]
+
+
+    def __init__(self,goal):
+        self.goal=np.array(goal,dtype=float)
+        self.n = 0
+        start=np.array([0,0],dtype=float)
+        if (self.initPos==start).all():
+            self.initPos=self.free_state()
+        else:
+            pass
+
+        #print(self.initPos)
+        self.perseus=self.initPos
+
+    def free_state(self):
+
+        temp_init=np.random.rand(2)
+
+        if(not self.obstacle_fn(np.around(temp_init,decimals=2))):
+
+            return temp_init
+        else:
+
+            self.free_state()
+
+
+    def obstacle_fn(self,inp):
+
+        check=inp
+        if(inp[0]<0 or inp[0]>1 or inp[1]<0 or inp[1]>1):
+            return True
+        elif(0.60<=check[0]<=0.85 and 0.60<=check[1]<=0.85):
+            return True
+        else:
+            return False
+
+    def take_action(self,state,action):
+        #+np.random.uniform(-30,30) #stochasticity of +/- 30 degrees
+        new_state=np.array([0,0],dtype=float)
+        new_state[0]=state[0]+0.1*np.cos(np.deg2rad(action))
+        new_state[1]=state[1]+0.1*np.sin(np.deg2rad(action))
+        #return np.around(new_state,decimals=2)
+        return new_state
+
+    def performAction(self, action):
+        temp=self.take_action(self.perseus,action)
+        if( not self.obstacle_fn(np.around(temp,decimals=2))):
+            self.perseus=temp
+        else:
+            self.perseus=self.perseus
+        self.timesteps+=1
+
+    def getSensors(self):
+        #return (np.around(self.perseus,decimals=2))
+        return self.perseus
+
+    def reset(self):
+        self.perseus=self.initPos
+        self.timesteps=0
+
+    '''def isfinished(self):
+        return(self.goal[0]-0.1<=self.perseus[0]<=self.goal[0]+0.1 and self.goal[1]-0.1<=self.perseus[1]<=self.goal[1]+0.1)
+
+    def loop(self):
+        while(not self.isfinished()):
+            act=random.choice(self.actions)
+            self.performAction(act)
+
+            #print(0.50<=self.getSensors().all()<=0.85)
+            print(self.getSensors())
+            plt.scatter(self.getSensors()[0],self.getSensors()[1])
+            plt.pause(0.05)
+        print("completed inself",self.timesteps)
+        self.reset()
+    
+    '''
