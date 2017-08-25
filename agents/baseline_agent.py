@@ -2,7 +2,7 @@
 
 from pybrain.rl.agents.logging import LoggingAgent
 import random
-from pybrain.rl.environments.continous_maze_discrete import CTS_Maze
+from environments.continous_maze_discrete_fixed import CTS_Maze
 import numpy as np
 
 class GPSARSA_Agent(LoggingAgent):

@@ -1,13 +1,8 @@
 
 from pybrain.rl.learners.valuebased.valuebased import ValueBasedLearner
-import GPy
-from pybrain.rl.agents.logging import LoggingAgent
 import numpy as np
-from numpy.linalg import inv
-from pybrain.datasets.reinforcement import ReinforcementDataSet
 from scipy import linalg
-#from copy import copy
-from itertools import tee
+
 class GP_SARSA(ValueBasedLearner):
     """ GP State-Action-Reward-State-Action (SARSA) algorithm.
     """
@@ -43,9 +38,7 @@ class GP_SARSA(ValueBasedLearner):
 
 
         for seq in self.dataset:
-            #seq,foo=tee(seq,2)
-            #foo=list(foo)
-            #print("the length is",foo[0])
+
             # information from the previous episode (sequence)
             # should not influence the training on this episode
             self.laststate = None
@@ -69,7 +62,7 @@ class GP_SARSA(ValueBasedLearner):
                     self.covariance_mat = self.covariance_list
                     #self.covariance_mat = np.hstack((self.covariance_mat, self.covariance_list))
                     #self.covariance_mat = np.vstack((self.covariance_mat, np.append(self.covariance_list, self.kern_c * 1)))
-                    print('ist step')
+
                     continue
 
                 else:
@@ -80,21 +73,20 @@ class GP_SARSA(ValueBasedLearner):
                         self.covariance_list = np.append(self.covariance_list, [self.kernel(self.state_dict[element],np.append(state, action))])
                     self.covariance_list = np.reshape(self.covariance_list, (1, self.covariance_list.shape[0]))
                     self.state_dict = np.append(self.state_dict, np.reshape(np.append(state, action), (1, 3)), axis=0)
-                    #self.H = np.append(self.H, np.zeros((self.H.shape[0], 1)), axis=1)
-                    #self.H = np.append(self.H, np.append(np.zeros((1, self.H.shape[0])), [[1., -self.gamma]], axis=1),axis=0)
+
                     self.covariance_mat = np.append(self.covariance_mat, self.covariance_list.transpose(), axis=1)
                     self.covariance_mat = np.vstack((self.covariance_mat, np.append(self.covariance_list, [self.kernel(np.append(state, action),np.append(state, action))])))
                     element=0
-                    #print(self.state_dict, self.state_dict.shape
+
                     self.laststate=state
                     self.lastaction=action
                     self.lastreward=reward
 
             self.update_inv(self.covariance_mat,self.get_H(self.state_dict.shape[0]))
 
-        #print(self.H)
-        print(self.state_dict.shape)
-        #print(self.covariance_mat.shape)
+
+        print('Dictionary shape',self.state_dict.shape)
+
 
 
     def action_kern(self,act1,act2):  #delta kernel
@@ -117,7 +109,7 @@ class GP_SARSA(ValueBasedLearner):
 
     def update_inv(self,K,H):
         self.sigma=0.05 #noise variance
-        #self.inv = np.dot(np.dot(k, H.transpose()),np.dot(inv(np.dot(np.dot(H, K), H.transpose()) + sigma ** 2 * np.dot(H, H.transpose())), R))
+
         self.inv=np.dot(H.transpose(),linalg.inv(np.dot(np.dot(H,K),H.transpose())+self.sigma**2*np.dot(H,H.transpose())))
         #print(self.inv.shape)
 

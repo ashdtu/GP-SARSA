@@ -1,9 +1,7 @@
 import numpy as np
 from pybrain.utilities import Named
 from pybrain.rl.environments.environment import Environment
-from scipy import clip
-import random
-import matplotlib.pyplot as plt
+
 class CTS_Maze(Environment, Named):
 	
     indim=2
@@ -23,21 +21,10 @@ class CTS_Maze(Environment, Named):
     def __init__(self,goal):
         self.goal=np.array(goal,dtype=float)
         self.n = 0
-        self.initPos=np.array([0.95,0.95],dtype=float)
+        self.initPos=np.array([0.0,0.0],dtype=float)
         #print(self.initPos)
         self.perseus=self.initPos
 
-    '''def free_state(self):
-
-        temp_init=np.random.rand(2)
-
-        if(not self.obstacle_fn(np.around(temp_init,decimals=2))):
-
-            return temp_init
-        else:
-
-            self.free_state()
-    '''
 
     def obstacle_fn(self,inp):
 
@@ -73,19 +60,3 @@ class CTS_Maze(Environment, Named):
         self.perseus=self.initPos
         self.timesteps=0
 
-    '''def isfinished(self):
-        return(self.goal[0]-0.1<=self.perseus[0]<=self.goal[0]+0.1 and self.goal[1]-0.1<=self.perseus[1]<=self.goal[1]+0.1)
-
-    def loop(self):
-        while(not self.isfinished()):
-            act=random.choice(self.actions)
-            self.performAction(act)
-
-            #print(0.50<=self.getSensors().all()<=0.85)
-            print(self.getSensors())
-            plt.scatter(self.getSensors()[0],self.getSensors()[1])
-            plt.pause(0.05)
-        print("completed inself",self.timesteps)
-        self.reset()
-    
-    '''

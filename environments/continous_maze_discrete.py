@@ -78,19 +78,4 @@ class CTS_Maze(Environment, Named):
         self.perseus=self.initPos
         self.timesteps=0
 
-    '''def isfinished(self):
-        return(self.goal[0]-0.1<=self.perseus[0]<=self.goal[0]+0.1 and self.goal[1]-0.1<=self.perseus[1]<=self.goal[1]+0.1)
 
-    def loop(self):
-        while(not self.isfinished()):
-            act=random.choice(self.actions)
-            self.performAction(act)
-
-            #print(0.50<=self.getSensors().all()<=0.85)
-            print(self.getSensors())
-            plt.scatter(self.getSensors()[0],self.getSensors()[1])
-            plt.pause(0.05)
-        print("completed inself",self.timesteps)
-        self.reset()
-    
-    '''
