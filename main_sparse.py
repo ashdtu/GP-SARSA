@@ -54,24 +54,6 @@ for repeat in range(5):
         agent.reset()
         print(sum)
 
-    ''' Results Generation
-    file="Final_results/cov_9_smooth/reward_%d.txt" %repeat
-    tfile="Final_results/cov_9_smooth/time_%d.txt" %repeat
-    dtfile="Final_results/cov_9_smooth/dict_%d.txt" %repeat
-    epsilonfile = "Final_results/cov_9_smooth/eps_%d.txt" % repeat
-    timefile=open(tfile,'w')
-    rewardfile=open(file,'w')
-    dictfile=open(dtfile,'w')
-    epsfile=open(epsilonfile,'w')
-    for some in sum:
-        rewardfile.write("%s \n" % some)
-    for elem in track_time:
-        timefile.write("%s \n" % elem)
-    for sime in dict_size:
-        dictfile.write("%s \n" % sime)
-    for seme in epsilon:
-        epsfile.write("%s \n" % seme)
-    '''
 
 
 
