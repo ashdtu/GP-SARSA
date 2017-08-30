@@ -2,18 +2,18 @@
 
 from pybrain.rl.agents.logging import LoggingAgent
 import random
-from environments.continous_maze_discrete_fixed import CTS_Maze
+from menu_model import SearchEnvironment
 import numpy as np
 
 class GPSARSA_Agent(LoggingAgent):
 
 
-    init_exploration = None  # aka epsilon
+
     
 
 
     def __init__(self, learner, **kwargs):
-        LoggingAgent.__init__(self, learner.num_features, 1, **kwargs)
+        LoggingAgent.__init__(self, 9, 1, **kwargs)
         self.learner = learner
         self.reset()
         self.learning=True
@@ -22,7 +22,7 @@ class GPSARSA_Agent(LoggingAgent):
         self.visited_states_y=[]
         self.qvalues=[]
         self.actionvalues=[]
-
+        self.init_exploration=1.0
 
     def _actionProbs(self, state):
 
@@ -30,7 +30,7 @@ class GPSARSA_Agent(LoggingAgent):
         self.q_mean=[]
         self.q_cov=[]
         i=0
-        for act in CTS_Maze.actions :
+        for act in SearchEnvironment.actions :
             self.K=[]
             for i in range(self.learner.ret_dict().shape[0]):
 
@@ -55,14 +55,14 @@ class GPSARSA_Agent(LoggingAgent):
             q_meanlist,q_covlist = self._actionProbs(self.lastobs)
 
             if (random.random() > self.init_exploration):
-                action = CTS_Maze.actions[np.argmax(q_meanlist)]
+                action = SearchEnvironment.actions[np.argmax(q_meanlist)]
                 #self.actionvalues.append(action)
             else:
-                #action = random.choice(CTS_Maze.actions)
-                action=CTS_Maze.actions[np.argmax(q_covlist)]
+                action = random.choice(SearchEnvironment.actions)
+                #action=SearchEnvironment.actions[np.argmax(q_covlist)]
 
         else:
-            action=random.choice(CTS_Maze.actions)
+            action=random.choice(SearchEnvironment.actions)
 
         self.lastaction = action
         return action
@@ -73,13 +73,7 @@ class GPSARSA_Agent(LoggingAgent):
 
     def reset(self):
         LoggingAgent.reset(self) #clear dataset sequences
-        self.visited_states_x = []
-        self.visited_states_y=[]
-        self.qvalues = []
-        self.actionvalues=[]
-
         self.learner.reset()
-
         self.newEpisode()
 
     def newEpisode(self):

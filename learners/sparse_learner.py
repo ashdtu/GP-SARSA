@@ -6,7 +6,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
     """
 
 
-    def __init__(self,gamma=0.99,threshold=9):
+    def __init__(self,gamma=0.99,threshold=10):
         ValueBasedLearner.__init__(self)
         self.thresh=threshold
 
@@ -15,7 +15,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
         self.laststate = None
         self.lastaction = None
 
-        self.num_features=2
+        self.num_features=9
         self.num_actions=1
         self.kern_c = 10
         self.state_dict = None
@@ -53,7 +53,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
                 if self.laststate is None:
 
                     if self.state_dict is None:
-                        self.state_dict = np.reshape(np.append(state, action),(1, 3))
+                        self.state_dict = np.reshape(np.append(state, action),(1, 10))
                         self.K_inv = np.reshape([(1 / self.kernel(np.append(state, action), np.append(state, action)))],(1,1))
                         self.c = np.zeros(1)
                         self.k_tild=np.array([self.kernel(np.append(state,action),np.append(state, action))])
@@ -195,7 +195,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
         return(self.kern_c*np.exp(-(np.sqrt(np.sum(np.subtract(state1,state2)**2))/(2*self.kern_sigma**2))))  #todo: if we use GPy kernel, product can't be multiplied
 
     def kernel(self,stat1,stat2):
-        return(self.state_kern(stat1[0:2],stat2[0:2])*self.action_kern(stat1[2],stat2[2]))
+        return(self.state_kern(stat1[0:10],stat2[0:10])*self.action_kern(stat1[9],stat2[9]))
 
     def ret_dict(self):
         return self.state_dict
