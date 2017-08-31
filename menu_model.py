@@ -103,7 +103,7 @@ class SearchEnvironment():
         self.n_training_menus = n_training_menus
         self.training_menus = list()
         self.training = True
-        self.n_item_lengths = 3
+
         #self.log_session_variables = ["items", "target_present", "target_idx"]       #Todo: use pybrain sequential dataset
         #self.log_step_variables = ["duration_focus_ms",
         #                           "duration_saccade_ms",
@@ -112,9 +112,9 @@ class SearchEnvironment():
         #                           "gaze_location"]
 
         # technical variables
-        self.discreteStates = True
+        self.discreteStates = False
         self.outdim = 1
-        self.indim = 1
+        self.indim = 9
         self.discreteActions = True
         self.numActions = self.n_items + 2 # look + click + quit
         self.click_status=Click.NOT_CLICKED
@@ -140,11 +140,13 @@ class SearchEnvironment():
                 }
 
     def _get_menu(self):
-        if self.training is True and len(self.training_menus) >= self.n_training_menus:
-            idx = np.random.randint(self.n_training_menus)
-            return self.training_menus[idx]
+        #if self.training is True and len(self.training_menus) >= self.n_training_menus:
+        #    idx = np.random.randint(self.n_training_menus)
+
+        #    return self.training_menus[idx]
         # generate menu item semantic relevances and lengths
-        final_menu = [MenuItem(0,0) for i in range(self.n_items)]
+        new_menu = [MenuItem(0,0) for i in range(self.n_items)]
+
 
         if self.menu_type == "semantic":
             items, target_idx = self._semantic(self.menu_groups,
@@ -158,15 +160,15 @@ class SearchEnvironment():
         else:
             raise ValueError("Unknown menu type: {}".format(self.menu_type))
         target_present=(target_idx!=None)
-        length_relevances= np.random.beta(0.3,0.3,len(items)).tolist()          #Length relevances, sampled as either relevant or non relevant
+        length_relevances= np.random.beta(0.3,0.3,len(items))          #Length relevances, sampled as either relevant or non relevant
         target_len=1
         for i in range(len(length_relevances)):
 
-            final_menu[i].item_relevance=items[i]
-            final_menu[i].item_length=length_relevances[i]
+            new_menu[i].item_relevance=items[i]
+            new_menu[i].item_length=length_relevances[i]
         if target_present:
-            final_menu[target_idx].item_length=target_len
-        menu = (tuple(final_menu), target_present, target_idx)
+            new_menu[target_idx].item_length=target_len
+        menu = (list(new_menu),target_present,target_idx)
 
         if self.training is True:
             self.training_menus.append(menu)
@@ -176,6 +178,7 @@ class SearchEnvironment():
     def reset(self):
         """ Called by the library to reset the state
         """
+        self.final_menu=None
         # state hidden from agent
         self.final_menu, self.target_present, self.target_idx = self._get_menu()
 
@@ -308,12 +311,15 @@ class SearchEnvironment():
 
         for i in range(0,self.n_items+1):
             if(i==focus_position):
-                new_belief[i] = beta.pdf(semantic_obs, t_pm[0], t_pm[1]) * prev_belief[i]
+                new_belief[i] = np.dot(beta.pdf(semantic_obs, t_pm[0], t_pm[1]),prev_belief[i])
             elif(i==self.n_items):
-                new_belief[i]=beta.pdf(semantic_obs,absent[0],absent[1])*prev_belief[i]
+                new_belief[i]=np.dot(beta.pdf(semantic_obs,absent[0],absent[1]),prev_belief[i])
             else:
-                new_belief[i]=beta.pdf(semantic_obs,non_pm[0],non_pm[1])*prev_belief[i]
+                new_belief[i]=np.dot(beta.pdf(semantic_obs,non_pm[0],non_pm[1]),prev_belief[i])
 
+        norm = sum(new_belief)
+        #new_belief = [(new_belief[x]/norm) for x in range(len(new_belief))]
+        new_belief=new_belief/norm
         return new_belief
         '''
     
@@ -375,7 +381,7 @@ class SearchEnvironment():
         """alpha and beta for target/relevant menu items"""
         target_group_parameters = [3.1625, 1.2766]
 
-        semantic_menu = np.array([0] * n_items)[np.newaxis]
+        #semantic_menu = np.array([0] * n_items)[np.newaxis]
 
         """randomly select whether the target is present or abscent"""
         target_type = np.random.rand()
@@ -399,7 +405,7 @@ class SearchEnvironment():
             menu1[target_location] = target_value
         else:
             target_location = None
-            menu1 = np.random.beta(abs_menu_parameters[0],abs_menu_parameters[1],(1, n_items))
+            menu1 = np.random.beta(abs_menu_parameters[0],abs_menu_parameters[1],(1, n_items))[0]
 
         semantic_menu = menu1
 

@@ -1,3 +1,6 @@
 import numpy as np
 from scipy.stats import beta
-print(beta.pdf(1.0,1,5.0))
+new_belief=[1,2,4,8]
+norm = sum(new_belief)
+new_belief = (new_belief/norm)
+print(new_belief)

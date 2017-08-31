@@ -65,6 +65,7 @@ class GPSARSA_Agent(LoggingAgent):
             action=random.choice(SearchEnvironment.actions)
 
         self.lastaction = action
+
         return action
 
     def integrateObservation(self, obs):
