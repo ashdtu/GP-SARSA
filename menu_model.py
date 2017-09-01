@@ -316,17 +316,14 @@ class SearchEnvironment():
                 new_belief[i]=np.dot(beta.pdf(semantic_obs,absent[0],absent[1]),prev_belief[i])
             else:
                 new_belief[i]=np.dot(beta.pdf(semantic_obs,non_pm[0],non_pm[1]),prev_belief[i])
+        new_belief=np.reshape(new_belief,(1,self.n_items+1))[0]
 
-        norm = sum(new_belief)
-        #new_belief = [(new_belief[x]/norm) for x in range(len(new_belief))]
-        new_belief=new_belief/norm
-        return new_belief
-        '''
+
     
         if len(len_obs)==0:
             norm = sum(new_belief)
-            new_belief = [new_belief[x] / norm for x in range(len(new_belief))]
-
+            new_belief = [(new_belief[x]/norm) for x in range(len(new_belief))]
+            return new_belief
 
         else:
             for i in range(self.n_items+1):
@@ -349,11 +346,10 @@ class SearchEnvironment():
             new_belief = [(new_belief[x]/norm) for x in range(len(new_belief))]
 
 
-        print('withoutnorm',c)
-        print('finalsum',np.sum(new_belief))
-        print('withnorm',new_belief)
+
+
         return new_belief
-        '''
+
     @property
     def clicked_item(self):
         if self.click_status == Click.NOT_CLICKED:
