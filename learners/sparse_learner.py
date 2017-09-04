@@ -46,8 +46,6 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
             self.lastaction = None
             self.lastreward = None
 
-
-
             for state, action, reward in seq:
 
                 if self.laststate is None:
@@ -112,7 +110,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
 
                     self.d=(self.gamma*self.sigma*self.v_inv*self.d) + reward -np.dot(self.delta_k,self.u_tilde)
                     self.d=float(self.d)
-
+                    print('delta',self.delta)
                     if(self.delta>self.thresh):
                         self.state_dict = np.vstack((self.state_dict, np.append(state, action)))
 

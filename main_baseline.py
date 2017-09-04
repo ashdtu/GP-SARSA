@@ -24,7 +24,7 @@ performance=[]  #reward accumulation, dump variable for any evaluation metric
 sum=[]
 agent.reset()
 i=0
-for num_exp in range(300):
+for num_exp in range(10):
 
     performance=exp.doEpisodes(1)
     sum = np.append(sum, np.sum(performance))
@@ -34,6 +34,7 @@ for num_exp in range(300):
 
     agent.learn()
     print(np.sum(performance))
+    print(agent.history)
     agent.reset()
 
 

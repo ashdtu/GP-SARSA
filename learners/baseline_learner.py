@@ -17,7 +17,7 @@ class GP_SARSA(ValueBasedLearner):
         self.laststate = None
         self.lastaction = None
 
-        self.num_features=2
+        self.num_features=9
         self.num_actions=1
         self.kern_c = 10
 

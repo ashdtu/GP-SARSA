@@ -1,5 +1,7 @@
 from pybrain.rl.environments.task import Task
-from menu_model import Click,Quit
+from menu_model import Click,Quit,Action,Focus,MenuItem
+import numpy as np
+from scipy.stats import beta
 class SearchTask(Task):
 
     reward_success = 10000
@@ -11,6 +13,9 @@ class SearchTask(Task):
         self.reward_success = 10000
         self.reward_failure = -10000
         self.max_number_of_actions_per_session = max_number_of_actions_per_session
+        self.belief_state=np.ones(self.env.n_items+1)
+        self.belief_state=self.belief_state/(self.env.n_items+1)
+        self.menu=None
 
     def to_dict(self):
         return {
@@ -18,16 +23,14 @@ class SearchTask(Task):
                 }
 
     def getReward(self):
-        """ Returns the current reward based on the state of the environment
-        """
-        # this function should be deterministic and without side effects
+
         if self.env.click_status != Click.NOT_CLICKED:
             if self.env.clicked_item.item_relevance == 1.0:
-
                 return self.reward_success
             else:
                 # penalty for clicking the wrong item
                 return self.reward_failure
+
         elif self.env.quit_status == Quit.HAS_QUIT:
             if self.env.target_present is False:
                 # reward for quitting when target is absent
@@ -39,8 +42,7 @@ class SearchTask(Task):
         return int(-1 * self.env.action_duration)
 
     def isFinished(self):
-        """ Returns true when the task is in end state """
-        # this function should be deterministic and without side effects
+
         if self.env.n_actions >= self.max_number_of_actions_per_session:
             return True
         elif self.env.click_status != Click.NOT_CLICKED:
@@ -52,10 +54,100 @@ class SearchTask(Task):
         return False
 
     def performAction(self, action):
-        self.env.performAction(action)
+        self.action = Action(int(action))
+        print(self.action)
+        self.prev_state = self.belief_state
+        self.env.duration_focus_ms, self.env.duration_saccade_ms = self.do_transition(self.prev_state,self.action)
+        self.env.action_duration = self.env.duration_focus_ms + self.env.duration_saccade_ms
+        self.env.gaze_location = int(self.env.Focus)
+        self.env.n_actions += 1
+
+    def do_transition(self, init_belief, action):
+
+        len_obs = []
+
+        if action != Action.CLICK and action != Action.QUIT:
+
+            if self.env.Focus != Focus.ABOVE_MENU:
+                amplitude = abs(self.env.item_locations[int(self.env.Focus) + 1] - self.env.item_locations[int(action) + 1])
+            else:
+                amplitude = abs(self.env.item_locations[0] - self.env.item_locations[int(action) + 1])
+            saccade_duration = int(37 + 2.7 * amplitude)
+            self.env.Focus = Focus(int(action))
+            #print('focus point', self.env.Focus)
+            focus_duration = 400
+
+            semantic_obs = self.menu[int(self.env.Focus)].item_relevance
+
+            loc = []
+
+            # possible length observations with peripheral vision
+
+            if self.env.len_observations is True:
+                a=np.random.rand()
+                if int(self.env.Focus) > 0 and a < self.env.p_obs_len_adj:
+                    len_obs.append(self.menu[int(self.env.Focus) - 1].item_length)
+                    loc.append(int(self.env.Focus) - 1)
+                if a < self.env.p_obs_len_cur:
+                    len_obs.append(self.menu[int(self.env.Focus)].item_length)
+                    loc.append(int(self.env.Focus))
+                if int(self.env.Focus) < self.env.n_items - 1 and a < self.env.p_obs_len_adj:
+                    len_obs.append(self.menu[int(self.env.Focus) + 1].item_length)
+                    loc.append(int(self.env.Focus) + 1)
+
+            # belief update , only in Focus actions
+            self.belief_update(init_belief, semantic_obs, len_obs, loc, int(self.env.Focus))
+
+
+        elif action == Action.CLICK:
+            if self.env.Focus != Focus.ABOVE_MENU:
+                self.env.click_status = Click(int(self.env.Focus))  # assume these match
+            else:
+                self.env.quit_status = Quit.HAS_QUIT
+
+            focus_duration = 0
+            saccade_duration = 0
+
+        # quit without choosing any item
+        elif action == Action.QUIT:
+            self.env.quit_status = Quit.HAS_QUIT
+            focus_duration = 0
+            saccade_duration = 0
+
+
+        else:
+            raise ValueError("Unknown action: {}".format(action))
+
+        return focus_duration, saccade_duration
+
+    def belief_update(self, prev_belief, semantic_obs, len_obs, loc, focus_position):
+        t_pm = [5.0, 1.0]
+        non_pm = [2.0, 5.0]
+        absent = [1, 5]
+        belief = prev_belief
+
+        for i in range(0, self.env.n_items + 1):
+            if (i == focus_position):
+                belief[i] = beta.pdf(semantic_obs, t_pm[0], t_pm[1])*belief[i]
+            elif (i == self.env.n_items):
+                belief[i] = beta.pdf(semantic_obs, absent[0], absent[1])*belief[i]
+            else:
+                belief[i] = beta.pdf(semantic_obs, non_pm[0], non_pm[1])*belief[i]
+        belief = np.reshape(belief, (1, self.env.n_items + 1))[0]
+
+        norm = sum(belief)
+        belief = belief / norm
+        self.belief_state=belief
+
+
 
     def reset(self):
         self.env.reset()
+        self.menu=self.env.getSensors()
+        self.belief_state=np.ones(self.env.n_items+1)
+        self.belief_state=self.belief_state/(self.env.n_items+1)
 
     def getObservation(self):
-        return self.env.getbelief()
+        return self.belief_state
+
+

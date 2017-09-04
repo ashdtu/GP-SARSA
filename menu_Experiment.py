@@ -51,12 +51,16 @@ for repeat in range(1):
         #    print('reward',c)
 
         agent.init_exploration=(10/(10+num_exp))
+
+
         #epsilon.append(agent.init_exploration)
         agent.learn()
-        #print('belief',env.belief_state)
-        #print('statedict',learner.state_dict)
+        #print('state_Dict',learner.state_dict)
 
-        dict_size=np.append(dict_size,learner.state_dict.shape[0])
+
+        #print('dataset',agent.history)
+
+        #dict_size=np.append(dict_size,learner.state_dict.shape[0])
         #track_time=np.append(track_time,[time.time()-starttime])
 
         agent.reset()

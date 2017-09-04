@@ -19,7 +19,7 @@ sum=[]
 track_time=[]
 dict_size=[]
 
-for repeat in range(5):
+for repeat in range(1):
     env = CTS_Maze([0.40, 0.40])  # goal
 
     task = CTS_MazeTask(env)
@@ -41,7 +41,7 @@ for repeat in range(5):
 
     b=[]
     c=[]
-    for num_exp in range(250):
+    for num_exp in range(10):
         performance=exp.doEpisodes(1)
         sum = np.append(sum, np.sum(performance))
 
@@ -50,7 +50,7 @@ for repeat in range(5):
         agent.learn()
         dict_size=np.append(dict_size,learner.state_dict.shape[0])
         track_time=np.append(track_time,[time.time()-starttime])
-
+        print('dataset',agent.history)
         agent.reset()
         print(sum)
 

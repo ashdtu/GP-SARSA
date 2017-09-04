@@ -7,11 +7,6 @@ import numpy as np
 
 class GPSARSA_Agent(LoggingAgent):
 
-
-
-    
-
-
     def __init__(self, learner, **kwargs):
         LoggingAgent.__init__(self, 9, 1, **kwargs)
         self.learner = learner
@@ -47,13 +42,11 @@ class GPSARSA_Agent(LoggingAgent):
 
 
 
-
-
     def getAction(self):
         action=None
         if (self.learner.ret_dict() is not None):
             q_meanlist,q_covlist = self._actionProbs(self.lastobs)
-
+            #print('in agent',self.lastobs)
             if (random.random() > self.init_exploration):
                 action = SearchEnvironment.actions[np.argmax(q_meanlist)]
                 #self.actionvalues.append(action)
@@ -69,11 +62,10 @@ class GPSARSA_Agent(LoggingAgent):
         return action
 
     def integrateObservation(self, obs):
-
         LoggingAgent.integrateObservation(self, obs)
 
     def reset(self):
-        LoggingAgent.reset(self) #clear dataset sequences
+        LoggingAgent.reset(self)        #clear dataset sequences
         self.learner.reset()
         self.newEpisode()
 

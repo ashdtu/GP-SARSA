@@ -13,7 +13,7 @@ class GPSARSA_Agent(LoggingAgent):
 
 
     def __init__(self, learner, **kwargs):
-        LoggingAgent.__init__(self, learner.num_features, 1, **kwargs)
+        LoggingAgent.__init__(self,2, 1, **kwargs)
         self.learner = learner
         #self.reset()
         self.learning=True
