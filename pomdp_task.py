@@ -2,13 +2,13 @@ from pybrain.rl.environments.task import Task
 from menu_model import Click,Quit,Action,Focus,MenuItem
 import numpy as np
 from scipy.stats import beta
-class SearchTask(Task):
+import copy
+class SearchTask():
 
     reward_success = 10000
     reward_failure = -10000
 
     def __init__(self, env, max_number_of_actions_per_session):
-        super(Task, self).__init__()
         self.env=env
         self.reward_success = 10000
         self.reward_failure = -10000
@@ -56,7 +56,7 @@ class SearchTask(Task):
     def performAction(self, action):
         self.action = Action(int(action))
         print(self.action)
-        self.prev_state = self.belief_state
+        self.prev_state = self.belief_state.copy()
         self.env.duration_focus_ms, self.env.duration_saccade_ms = self.do_transition(self.prev_state,self.action)
         self.env.action_duration = self.env.duration_focus_ms + self.env.duration_saccade_ms
         self.env.gaze_location = int(self.env.Focus)
@@ -96,7 +96,7 @@ class SearchTask(Task):
                     loc.append(int(self.env.Focus) + 1)
 
             # belief update , only in Focus actions
-            self.belief_update(init_belief, semantic_obs, len_obs, loc, int(self.env.Focus))
+            self.belief_state=self.belief_update(init_belief, semantic_obs, len_obs, loc, int(self.env.Focus))
 
 
         elif action == Action.CLICK:
@@ -124,7 +124,7 @@ class SearchTask(Task):
         t_pm = [5.0, 1.0]
         non_pm = [2.0, 5.0]
         absent = [1, 5]
-        belief = prev_belief
+        belief = prev_belief.copy()
 
         for i in range(0, self.env.n_items + 1):
             if (i == focus_position):
@@ -133,11 +133,12 @@ class SearchTask(Task):
                 belief[i] = beta.pdf(semantic_obs, absent[0], absent[1])*belief[i]
             else:
                 belief[i] = beta.pdf(semantic_obs, non_pm[0], non_pm[1])*belief[i]
-        belief = np.reshape(belief, (1, self.env.n_items + 1))[0]
+        belief = np.reshape(belief,(1, self.env.n_items + 1))[0]
 
-        norm = sum(belief)
-        belief = belief / norm
-        self.belief_state=belief
+        norm = np.sum(belief)
+        belief = belief/norm
+        print('belief',belief)
+        return belief
 
 
 

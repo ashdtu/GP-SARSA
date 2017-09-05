@@ -51,6 +51,7 @@ for repeat in range(1):
         dict_size=np.append(dict_size,learner.state_dict.shape[0])
         track_time=np.append(track_time,[time.time()-starttime])
         print('dataset',agent.history)
+        print('dic',learner.state_dict)
         agent.reset()
         print(sum)
 

@@ -51,7 +51,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
                 if self.laststate is None:
 
                     if self.state_dict is None:
-                        self.state_dict = np.reshape(np.append(state, action),(1, 10))
+                        self.state_dict = np.reshape(np.append(state, action),(1,10))
                         self.K_inv = np.reshape([(1 / self.kernel(np.append(state, action), np.append(state, action)))],(1,1))
                         self.c = np.zeros(1)
                         self.k_tild=np.array([self.kernel(np.append(state,action),np.append(state, action))])
@@ -110,7 +110,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
 
                     self.d=(self.gamma*self.sigma*self.v_inv*self.d) + reward -np.dot(self.delta_k,self.u_tilde)
                     self.d=float(self.d)
-                    print('delta',self.delta)
+                    #print('delta',self.delta)
                     if(self.delta>self.thresh):
                         self.state_dict = np.vstack((self.state_dict, np.append(state, action)))
 

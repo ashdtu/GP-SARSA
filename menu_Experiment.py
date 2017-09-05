@@ -41,23 +41,14 @@ for repeat in range(1):
 
     b=[]
     c=[]
-    for num_exp in range(100):
+    for num_exp in range(10):
         print('new episode')
         performance=exp.doEpisodes(1)
         sum = np.append(sum, np.sum(performance))
-        #for a,b,c in agent.history:
-        #    print('state',a)
-        #    print('action',b)
-        #    print('reward',c)
 
         agent.init_exploration=(10/(10+num_exp))
-
-
         #epsilon.append(agent.init_exploration)
         agent.learn()
-        #print('state_Dict',learner.state_dict)
-
-
         #print('dataset',agent.history)
 
         #dict_size=np.append(dict_size,learner.state_dict.shape[0])

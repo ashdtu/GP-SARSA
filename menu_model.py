@@ -183,7 +183,7 @@ class SearchEnvironment():
         # state hidden from agent
         self.final_menu, self.target_present, self.target_idx = self._get_menu()
 
-        #print('Target location',self.target_idx)
+        print('Target location',self.target_idx)
 
         self.Focus = Focus.ABOVE_MENU
         self.click_status = Click.NOT_CLICKED

@@ -1,5 +1,3 @@
-
-
 from pybrain.rl.agents.logging import LoggingAgent
 import random
 from menu_model import SearchEnvironment
@@ -46,7 +44,7 @@ class GPSARSA_Agent(LoggingAgent):
         action=None
         if (self.learner.ret_dict() is not None):
             q_meanlist,q_covlist = self._actionProbs(self.lastobs)
-            #print('in agent',self.lastobs)
+
             if (random.random() > self.init_exploration):
                 action = SearchEnvironment.actions[np.argmax(q_meanlist)]
                 #self.actionvalues.append(action)
@@ -59,10 +57,12 @@ class GPSARSA_Agent(LoggingAgent):
 
         self.lastaction = action
 
+
         return action
 
     def integrateObservation(self, obs):
         LoggingAgent.integrateObservation(self, obs)
+
 
     def reset(self):
         LoggingAgent.reset(self)        #clear dataset sequences
