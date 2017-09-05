@@ -6,7 +6,7 @@ import numpy as np
 class GPSARSA_Agent(LoggingAgent):
 
     def __init__(self, learner, **kwargs):
-        LoggingAgent.__init__(self, 9, 1, **kwargs)
+        LoggingAgent.__init__(self,learner.num_features,learner.num_actions, **kwargs)
         self.learner = learner
         self.reset()
         self.learning=True
@@ -47,10 +47,10 @@ class GPSARSA_Agent(LoggingAgent):
 
             if (random.random() > self.init_exploration):
                 action = SearchEnvironment.actions[np.argmax(q_meanlist)]
-                #self.actionvalues.append(action)
+
             else:
-                action = random.choice(SearchEnvironment.actions)
-                #action=SearchEnvironment.actions[np.argmax(q_covlist)]
+                #action = random.choice(SearchEnvironment.actions)
+                action=SearchEnvironment.actions[np.argmax(q_covlist)]
 
         else:
             action=random.choice(SearchEnvironment.actions)
@@ -81,6 +81,4 @@ class GPSARSA_Agent(LoggingAgent):
         self.learner.learn()
 
 
-    def ret_values(self):
-        return self.actionvalues,self.qvalues
 

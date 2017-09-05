@@ -9,9 +9,6 @@ from pybrain.rl.experiments import EpisodicExperiment
 from learners.sparse_learner import GP_SARSA_SPARSE
 from agents.sparse_agent import GPSARSA_Agent
 
-plt.ion()
-
-i=1000
 performance=[]  #reward accumulation, dump variable for any evaluation metric
 sum=[]
 
@@ -21,7 +18,6 @@ dict_size=[]
 
 for repeat in range(1):
     env = SearchEnvironment()  # goal
-
     task = SearchTask(env,20)
     learner = GP_SARSA_SPARSE(gamma=0.95)
     learner.sigma = 1
@@ -32,8 +28,9 @@ for repeat in range(1):
     exp = EpisodicExperiment(task, agent)
     agent.reset()
     sum=[]
+    avg=[]
     performance=[]
-    #track_time=[]
+    track_time=[]
     agent.init_exploration=1.0
     #starttime = time.time()
     dict_size=[]
@@ -41,21 +38,21 @@ for repeat in range(1):
 
     b=[]
     c=[]
-    for num_exp in range(10):
-        print('new episode')
+    for num_exp in range(30000):
+        #print('new episode')
         performance=exp.doEpisodes(1)
-        sum = np.append(sum, np.sum(performance))
-
-        agent.init_exploration=(10/(10+num_exp))
-        #epsilon.append(agent.init_exploration)
+        if(num_exp%1000==0 and num_exp!=0):
+            agent.init_exploration-=agent.init_exploration*0.1
+        sum=np.append(sum,np.sum(performance))
         agent.learn()
-        #print('dataset',agent.history)
-
+        print(sum)
+        #print(learner.state_dict.shape)
         #dict_size=np.append(dict_size,learner.state_dict.shape[0])
         #track_time=np.append(track_time,[time.time()-starttime])
-
         agent.reset()
-        print(sum)
+    avg=[np.mean(sum[i:i+1000]) for i in np.arange(0,30000,1000)]
+
+    print(avg)
 
 
 

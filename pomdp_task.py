@@ -55,7 +55,7 @@ class SearchTask():
 
     def performAction(self, action):
         self.action = Action(int(action))
-        print(self.action)
+        #print(self.action)
         self.prev_state = self.belief_state.copy()
         self.env.duration_focus_ms, self.env.duration_saccade_ms = self.do_transition(self.prev_state,self.action)
         self.env.action_duration = self.env.duration_focus_ms + self.env.duration_saccade_ms
@@ -135,9 +135,28 @@ class SearchTask():
                 belief[i] = beta.pdf(semantic_obs, non_pm[0], non_pm[1])*belief[i]
         belief = np.reshape(belief,(1, self.env.n_items + 1))[0]
 
-        norm = np.sum(belief)
-        belief = belief/norm
-        print('belief',belief)
+        if len(len_obs) == 0:
+            norm = sum(belief)
+            belief = belief/norm
+            return belief
+
+        else:
+            for i in range(self.env.n_items + 1):
+                if i in loc:
+                    for j, k in enumerate(loc):  # loc contains location of length observations
+                        if (i == k):
+                            belief[i] = belief[i] * beta.pdf(len_obs[j], t_pm[0], t_pm[1])
+                        else:
+                            belief[i] = belief[i] * beta.pdf(len_obs[j], non_pm[0], non_pm[1])
+                elif (i == self.env.n_items):
+                    for j in range(len(len_obs)):
+                        belief[i] = belief[i] * beta.pdf(len_obs[j], absent[0], absent[1])
+                else:
+                    for j in range(len(len_obs)):
+                        belief[i] = belief[i] * beta.pdf(len_obs[j], non_pm[0], non_pm[1])
+            norm = sum(belief)
+            belief = belief / norm
+
         return belief
 
 

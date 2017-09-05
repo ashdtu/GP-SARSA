@@ -39,7 +39,7 @@ class CTS_MazeTask(Task):
 
     def isFinished(self):
         self.env.goal=np.array(self.env.goal,dtype=float)
-        return ((self.env.goal[0]-0.1<=self.env.perseus[0]<=self.env.goal[0]+0.1 and self.env.goal[1]-0.1<=self.env.perseus[1]<=self.env.goal[1]+0.1) or self.env.timesteps==50)
+        return ((self.env.goal[0]-0.1<=self.env.perseus[0]<=self.env.goal[0]+0.1 and self.env.goal[1]-0.1<=self.env.perseus[1]<=self.env.goal[1]+0.1) or self.env.timesteps==40)
 
 
 

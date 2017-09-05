@@ -41,7 +41,7 @@ for repeat in range(1):
 
     b=[]
     c=[]
-    for num_exp in range(10):
+    for num_exp in range(200):
         performance=exp.doEpisodes(1)
         sum = np.append(sum, np.sum(performance))
 
@@ -49,9 +49,8 @@ for repeat in range(1):
         epsilon.append(agent.init_exploration)
         agent.learn()
         dict_size=np.append(dict_size,learner.state_dict.shape[0])
-        track_time=np.append(track_time,[time.time()-starttime])
-        print('dataset',agent.history)
-        print('dic',learner.state_dict)
+        #track_time=np.append(track_time,[time.time()-starttime])
+
         agent.reset()
         print(sum)
 

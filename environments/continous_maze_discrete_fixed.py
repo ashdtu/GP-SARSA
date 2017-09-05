@@ -21,7 +21,7 @@ class CTS_Maze(Environment, Named):
     def __init__(self,goal):
         self.goal=np.array(goal,dtype=float)
         self.n = 0
-        self.initPos=np.array([0.0,0.0],dtype=float)
+        self.initPos=np.array([0.10,0.10],dtype=float)
         #print(self.initPos)
         self.perseus=self.initPos
 

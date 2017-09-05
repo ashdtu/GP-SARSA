@@ -6,7 +6,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
     """
 
 
-    def __init__(self,gamma=0.99,threshold=0):
+    def __init__(self,gamma=0.99,threshold=4):
         ValueBasedLearner.__init__(self)
         self.thresh=threshold
 
@@ -107,7 +107,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
                     self.delta=float(self.delta)
                     self.delta_list.append(self.delta)
                     self.delta_k=self.k_tild_past-self.gamma*self.k_tild
-
+                    #print('delta',self.delta)
                     self.d=(self.gamma*self.sigma*self.v_inv*self.d) + reward -np.dot(self.delta_k,self.u_tilde)
                     self.d=float(self.d)
                     #print('delta',self.delta)
