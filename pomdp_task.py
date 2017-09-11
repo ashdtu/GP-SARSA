@@ -1,5 +1,5 @@
 from pybrain.rl.environments.task import Task
-from menu_model import Click,Quit,Action,Focus,MenuItem
+from menu_model_short import Click,Quit,Action,Focus,MenuItem
 import numpy as np
 from scipy.stats import beta
 import copy
@@ -55,7 +55,6 @@ class SearchTask():
 
     def performAction(self, action):
         self.action = Action(int(action))
-        #print(self.action)
         self.prev_state = self.belief_state.copy()
         self.env.duration_focus_ms, self.env.duration_saccade_ms = self.do_transition(self.prev_state,self.action)
         self.env.action_duration = self.env.duration_focus_ms + self.env.duration_saccade_ms
@@ -76,7 +75,6 @@ class SearchTask():
             self.env.Focus = Focus(int(action))
             #print('focus point', self.env.Focus)
             focus_duration = 400
-
             semantic_obs = self.menu[int(self.env.Focus)].item_relevance
 
             loc = []
@@ -164,6 +162,7 @@ class SearchTask():
     def reset(self):
         self.env.reset()
         self.menu=self.env.getSensors()
+        #print('menuuuu',self.menu)
         self.belief_state=np.ones(self.env.n_items+1)
         self.belief_state=self.belief_state/(self.env.n_items+1)
 

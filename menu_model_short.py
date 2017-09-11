@@ -1,7 +1,6 @@
 import numpy as np
 import math
 from enum import IntEnum
-from scipy.stats import beta
 
 class Quit(IntEnum):
     NOT_QUIT = 0
@@ -13,34 +12,22 @@ class Focus(IntEnum):  # assume 8 items in menu
     ITEM_2 = 1
     ITEM_3 = 2
     ITEM_4 = 3
-    ITEM_5 = 4
-    ITEM_6 = 5
-    ITEM_7 = 6
-    ITEM_8 = 7
-    ABOVE_MENU = 8
+    ABOVE_MENU = 4
 
 class Click(IntEnum):  # assume 8 items in menu
     CLICK_1 = 0
     CLICK_2 = 1
     CLICK_3 = 2
     CLICK_4 = 3
-    CLICK_5 = 4
-    CLICK_6 = 5
-    CLICK_7 = 6
-    CLICK_8 = 7
-    NOT_CLICKED = 8
+    NOT_CLICKED = 4
 
 class Action(IntEnum):  # assume 8 items in menu
     LOOK_1 = 0
     LOOK_2 = 1
     LOOK_3 = 2
     LOOK_4 = 3
-    LOOK_5 = 4
-    LOOK_6 = 5
-    LOOK_7 = 6
-    LOOK_8 = 7
-    CLICK = 8
-    QUIT = 9
+    CLICK = 4
+    QUIT = 5
 
 class MenuItem():
     """
@@ -71,12 +58,11 @@ class MenuItem():
         return MenuItem(self.item_relevance, self.item_length)
 
 class SearchEnvironment():
-    actions=range(0,10)   # No of actions= n_items + 2
+    actions=range(0,6)   # No of actions= n_items + 2
     def __init__(self,
             menu_type="unordered",
-            menu_groups=2,
+            menu_groups=1,
             menu_items_per_group=4,
-            semantic_levels=3,
             gap_between_items=0.75,
             prop_target_abs=0.1,
             len_observations=True,
@@ -93,8 +79,7 @@ class SearchEnvironment():
         self.menu_groups = menu_groups
         self.menu_items_per_group = menu_items_per_group
         self.n_items = self.menu_groups * self.menu_items_per_group
-        assert self.n_items == 8
-        self.semantic_levels = semantic_levels
+        assert self.n_items == 4
         self.gap_between_items = gap_between_items
         self.prop_target_abs = prop_target_abs
         self.len_observations = len_observations
@@ -114,7 +99,7 @@ class SearchEnvironment():
         # technical variables
         self.discreteStates = False
         self.outdim = 1
-        self.indim = 9
+        self.indim = 5
         self.discreteActions = True
         self.numActions = self.n_items + 2 # look + click + quit
         self.click_status=Click.NOT_CLICKED
@@ -130,7 +115,6 @@ class SearchEnvironment():
                 "menu_type": self.menu_type,
                 "menu_groups": self.menu_groups,
                 "menu_items_per_group": self.menu_items_per_group,
-                "semantic_levels": self.semantic_levels,
                 "gap_between_items": self.gap_between_items,
                 "prop_target_abs": self.prop_target_abs,
                 "len_observations": self.len_observations,
@@ -182,9 +166,7 @@ class SearchEnvironment():
         self.final_menu=None
         # state hidden from agent
         self.final_menu, self.target_present, self.target_idx = self._get_menu()
-
-        print('Target location',self.target_idx)
-
+        #print('Target location',self.target_idx)
         self.Focus = Focus.ABOVE_MENU
         self.click_status = Click.NOT_CLICKED
         self.quit_status = Quit.NOT_QUIT
@@ -218,7 +200,7 @@ class SearchEnvironment():
         abs_menu_parameters = [2.1422, 13.4426]
 
         """alpha and beta for non-target/irrelevant menu items"""
-        non_pm_group_paremeters = [5.3665, 18.8826]
+        #non_pm_group_paremeters = [5.3665, 18.8826]
 
         """alpha and beta for target/relevant menu items"""
         target_group_parameters = [3.1625, 1.2766]
@@ -230,19 +212,8 @@ class SearchEnvironment():
 
         if target_type > p_abs:
             target_group_samples = np.random.beta(target_group_parameters[0], target_group_parameters[1], (1, n_each_group))[0]
-            """sample distractors from the Distractor group distribution"""
-            distractor_group_samples = np.random.beta(non_pm_group_paremeters[0], non_pm_group_paremeters[1], (1, n_items))[0]
 
-            """ step 3 using the samples above to create Organised Menu and Random Menu
-                and then add the target group
-                the menu is created with all distractors first
-            """
-            menu1 = distractor_group_samples
-            target_in_group = math.ceil((target_location + 1) / float(n_each_group))
-            begin = (target_in_group - 1) * n_each_group
-            end = (target_in_group - 1) * n_each_group + n_each_group
-
-            menu1[begin:end] = target_group_samples
+            menu1 = target_group_samples
             menu1[target_location] = target_value
         else:
             target_location = None
@@ -253,7 +224,6 @@ class SearchEnvironment():
         return semantic_menu, target_location
 
     def _get_unordered_menu(self, n_groups, n_each_group,p_abs):
-        assert(n_groups > 1)
         assert(n_each_group > 1)
         semantic_menu, target = self._semantic(n_groups, n_each_group, p_abs)
         unordered_menu = np.random.permutation(semantic_menu)

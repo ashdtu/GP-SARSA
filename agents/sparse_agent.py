@@ -1,6 +1,6 @@
 from pybrain.rl.agents.logging import LoggingAgent
 import random
-from menu_model import SearchEnvironment
+from menu_model_short import SearchEnvironment
 import numpy as np
 
 class GPSARSA_Agent(LoggingAgent):
@@ -19,7 +19,6 @@ class GPSARSA_Agent(LoggingAgent):
 
     def _actionProbs(self, state):
 
-
         self.q_mean=[]
         self.q_cov=[]
         i=0
@@ -35,7 +34,6 @@ class GPSARSA_Agent(LoggingAgent):
             self.q_mean=np.append(self.q_mean,np.dot(self.K,alpha)) #q mean list for every action
             self.q_cov=np.append(self.q_cov,self.learner.kernel(np.append(state,act),np.append(state,act))-np.dot(np.dot(self.K,C),self.K.T)) #q_covariance for every action
 
-
         return self.q_mean,self.q_cov
 
 
@@ -44,13 +42,18 @@ class GPSARSA_Agent(LoggingAgent):
         action=None
         if (self.learner.ret_dict() is not None):
             q_meanlist,q_covlist = self._actionProbs(self.lastobs)
-
+            #q_meanlist= self._actionProbs(self.lastobs)
             if (random.random() > self.init_exploration):
-                action = SearchEnvironment.actions[np.argmax(q_meanlist)]
+                max_index=np.argwhere(q_meanlist==np.amax(q_meanlist))
+                max_index=max_index.flatten().tolist()
+                action = SearchEnvironment.actions[random.choice(max_index)]
 
             else:
                 #action = random.choice(SearchEnvironment.actions)
-                action=SearchEnvironment.actions[np.argmax(q_covlist)]
+                cov_index = np.argwhere(q_covlist == np.amax(q_covlist))
+                cov_index = cov_index.flatten().tolist()
+                action = SearchEnvironment.actions[random.choice(cov_index)]
+
 
         else:
             action=random.choice(SearchEnvironment.actions)
