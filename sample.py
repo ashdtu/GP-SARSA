@@ -1,15 +1,12 @@
+temp_list=[]
 import numpy as np
-from matplotlib import pyplot as plt
-a=[2,3,4,5]
-from scipy.stats import beta
-new_belief=[1,2,4,8]
-norm = sum(new_belief)
-x=new_belief
-import random
-a=1
-for i in range(50):
-    a-=a*0.05
-    if(i==25):
-        print(a)
+with open("menu_reward.txt") as file:
+    for line in file:
+        line = line.strip()
+        line = float(line)
+        temp_list.append(line)
 
-print(new_belief)
+avg = [np.mean(temp_list[i:i + 100]) for i in np.arange(0,10000,100)]
+from matplotlib import pyplot as plt
+plt.plot(range(100),avg)
+plt.show()

@@ -85,7 +85,6 @@ class GP_SARSA(ValueBasedLearner):
             self.update_inv(self.covariance_mat,self.get_H(self.state_dict.shape[0]))
 
 
-        print('Dictionary shape',self.state_dict.shape)
 
 
 

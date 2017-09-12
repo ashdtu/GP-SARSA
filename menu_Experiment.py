@@ -5,8 +5,8 @@ import numpy as np
 from menu_model_short import SearchEnvironment
 from pomdp_task import SearchTask
 from pybrain.rl.experiments import EpisodicExperiment
-from learners.baseline_learner import GP_SARSA
-from agents.baseline_agent import GPSARSA_Agent
+from learners.sparse_learner import GP_SARSA_SPARSE
+from agents.sparse_agent import GPSARSA_Agent
 
 performance=[]  #reward accumulation, dump variable for any evaluation metric
 sum=[]
@@ -18,7 +18,7 @@ dict_size=[]
 for repeat in range(1):
     env = SearchEnvironment()  # goal
     task = SearchTask(env,8)
-    learner = GP_SARSA(gamma=0.95)
+    learner = GP_SARSA_SPARSE(gamma=0.95)
     learner.sigma = 1
     learner.batchMode = False  # extra , not in use , set to True for batch learning
     agent = GPSARSA_Agent(learner)
@@ -37,19 +37,18 @@ for repeat in range(1):
 
     b=[]
     c=[]
-    for num_exp in range(2000):
+    for num_exp in range(10000):
         #print('new episode')
         performance=exp.doEpisodes(1)
         sum = np.append(sum, np.sum(performance))
-        if(num_exp%20==0 and num_exp!=0):
+        if(num_exp%50==0 and num_exp!=0):
             agent.learn()
-            
             print(learner.state_dict.shape)
             agent.reset()
 
-        if(num_exp%40==0 and num_exp!=0):
+        if(num_exp%200==0 and num_exp!=0):
             agent.init_exploration -= agent.init_exploration * 0.05
-            avg = np.mean(sum[num_exp-40:num_exp])
+            avg = np.mean(sum[num_exp-200:num_exp])
             print(avg)
 
         #print(learner.state_dict.shape)
