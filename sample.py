@@ -7,9 +7,9 @@ norm = sum(new_belief)
 x=new_belief
 import random
 a=1
-for i in range(100):
+for i in range(50):
     a-=a*0.05
-    if(i==50):
+    if(i==25):
         print(a)
 
 print(new_belief)

@@ -43,6 +43,7 @@ class GPSARSA_Agent(LoggingAgent):
         if (self.learner.ret_dict() is not None):
             q_meanlist,q_covlist = self._actionProbs(self.lastobs)
             #q_meanlist= self._actionProbs(self.lastobs)
+            #print('mean',q_meanlist)
             if (random.random() > self.init_exploration):
                 max_index=np.argwhere(q_meanlist==np.amax(q_meanlist))
                 max_index=max_index.flatten().tolist()

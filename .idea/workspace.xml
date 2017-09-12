@@ -2,12 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="68006a0e-164f-4fb5-ae01-a322b8ccafa6" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/agents/baseline_agent.py" afterPath="$PROJECT_DIR$/agents/baseline_agent.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/agents/sparse_agent.py" afterPath="$PROJECT_DIR$/agents/sparse_agent.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/learners/baseline_learner.py" afterPath="$PROJECT_DIR$/learners/baseline_learner.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/learners/sparse_learner.py" afterPath="$PROJECT_DIR$/learners/sparse_learner.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/menu_Experiment.py" afterPath="$PROJECT_DIR$/menu_Experiment.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/menu_model.py" afterPath="$PROJECT_DIR$/menu_model.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pomdp_task.py" afterPath="$PROJECT_DIR$/pomdp_task.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sample.py" afterPath="$PROJECT_DIR$/sample.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -23,8 +22,8 @@
       <file leaf-file-name="menu_Experiment.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/menu_Experiment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="370">
-              <caret line="45" column="22" lean-forward="true" selection-start-line="45" selection-start-column="22" selection-end-line="45" selection-end-column="22" />
+            <state relative-caret-position="310">
+              <caret line="45" column="12" lean-forward="false" selection-start-line="45" selection-start-column="12" selection-end-line="45" selection-end-column="12" />
               <folding>
                 <element signature="e#1#37#0" expanded="true" />
               </folding>
@@ -32,11 +31,33 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="baseline_agent.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/agents/baseline_agent.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="256">
+              <caret line="61" column="0" lean-forward="true" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
+              <folding>
+                <element signature="e#2#52#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="baseline_learner.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/learners/baseline_learner.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1680">
+              <caret line="104" column="0" lean-forward="true" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="sparse_agent.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/agents/sparse_agent.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="120">
+              <caret line="45" column="13" lean-forward="false" selection-start-line="45" selection-start-column="13" selection-end-line="45" selection-end-column="13" />
               <folding>
                 <element signature="e#0#50#0" expanded="true" />
               </folding>
@@ -71,11 +92,11 @@
       <file leaf-file-name="sparse_learner.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/learners/sparse_learner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="160">
+            <state relative-caret-position="340">
               <caret line="194" column="9" lean-forward="false" selection-start-line="194" selection-start-column="9" selection-end-line="194" selection-end-column="9" />
               <folding>
                 <element signature="e#1#72#0" expanded="true" />
-                <marker date="1505159246202" expanded="true" signature="133:250" ph="..." />
+                <marker date="1505219858059" expanded="true" signature="133:250" ph="..." />
               </folding>
             </state>
           </provider>
@@ -85,7 +106,7 @@
         <entry file="file://$PROJECT_DIR$/sample.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="220">
-              <caret line="11" column="14" lean-forward="false" selection-start-line="11" selection-start-column="14" selection-end-line="11" selection-end-column="14" />
+              <caret line="11" column="12" lean-forward="false" selection-start-line="11" selection-start-column="12" selection-end-line="11" selection-end-column="12" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -130,6 +151,7 @@
       <find>CTS_Maze</find>
       <find>self.sigm</find>
       <find>print</find>
+      <find>mean</find>
     </findStrings>
     <replaceStrings>
       <replace>CTS_Maze</replace>
@@ -144,17 +166,17 @@
       <list>
         <option value="$PROJECT_DIR$/environments/continous_maze_discrete.py" />
         <option value="$PROJECT_DIR$/main_gpsarsa_sparse.py" />
-        <option value="$PROJECT_DIR$/agents/baseline_agent.py" />
-        <option value="$PROJECT_DIR$/learners/baseline_learner.py" />
         <option value="$PROJECT_DIR$/main_baseline.py" />
         <option value="$PROJECT_DIR$/tasks/CTS_TASK.py" />
         <option value="$PROJECT_DIR$/environments/continous_maze_discrete_fixed.py" />
         <option value="$PROJECT_DIR$/main_sparse.py" />
         <option value="$PROJECT_DIR$/menu_model.py" />
         <option value="$PROJECT_DIR$/menu_model_short.py" />
-        <option value="$PROJECT_DIR$/agents/sparse_agent.py" />
         <option value="$PROJECT_DIR$/pomdp_task.py" />
         <option value="$PROJECT_DIR$/learners/sparse_learner.py" />
+        <option value="$PROJECT_DIR$/agents/sparse_agent.py" />
+        <option value="$PROJECT_DIR$/learners/baseline_learner.py" />
+        <option value="$PROJECT_DIR$/agents/baseline_agent.py" />
         <option value="$PROJECT_DIR$/sample.py" />
         <option value="$PROJECT_DIR$/menu_Experiment.py" />
       </list>
@@ -533,7 +555,7 @@
           <caret line="27" column="27" lean-forward="false" selection-start-line="27" selection-start-column="27" selection-end-line="27" selection-end-column="27" />
           <folding>
             <element signature="e#1#72#0" expanded="true" />
-            <marker date="1505159246202" expanded="true" signature="133:250" ph="..." />
+            <marker date="1505219858059" expanded="true" signature="133:250" ph="..." />
           </folding>
         </state>
       </provider>
@@ -594,7 +616,7 @@
           <caret line="27" column="27" lean-forward="false" selection-start-line="27" selection-start-column="27" selection-end-line="27" selection-end-column="27" />
           <folding>
             <element signature="e#1#72#0" expanded="true" />
-            <marker date="1505159246202" expanded="true" signature="133:250" ph="..." />
+            <marker date="1505219858059" expanded="true" signature="133:250" ph="..." />
           </folding>
         </state>
       </provider>
@@ -699,7 +721,7 @@
           <caret line="51" column="0" lean-forward="false" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
           <folding>
             <element signature="e#1#72#0" expanded="true" />
-            <marker date="1505159246202" expanded="true" signature="133:250" ph="..." />
+            <marker date="1505219858059" expanded="true" signature="133:250" ph="..." />
           </folding>
         </state>
       </provider>
@@ -757,7 +779,7 @@
           <caret line="197" column="89" lean-forward="false" selection-start-line="197" selection-start-column="89" selection-end-line="197" selection-end-column="89" />
           <folding>
             <element signature="e#1#72#0" expanded="true" />
-            <marker date="1505159246202" expanded="true" signature="133:250" ph="..." />
+            <marker date="1505219858059" expanded="true" signature="133:250" ph="..." />
           </folding>
         </state>
       </provider>
@@ -785,7 +807,7 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#1#72#0" expanded="true" />
-            <marker date="1505159246202" expanded="true" signature="133:250" ph="..." />
+            <marker date="1505219858059" expanded="true" signature="133:250" ph="..." />
           </folding>
         </state>
       </provider>
@@ -840,20 +862,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/agents/baseline_agent.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="489">
-          <caret line="87" column="0" lean-forward="true" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/learners/baseline_learner.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="199">
-          <caret line="102" column="51" lean-forward="false" selection-start-line="102" selection-start-column="51" selection-end-line="102" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/PyBrain-0.3.3-py3.6.egg/pybrain/rl/agents/agent.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
@@ -889,43 +897,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/agents/sparse_agent.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#50#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main_sparse.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1020">
           <caret line="51" column="9" lean-forward="false" selection-start-line="51" selection-start-column="9" selection-end-line="51" selection-end-column="9" />
           <folding>
             <element signature="e#1#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/learners/sparse_learner.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="194" column="9" lean-forward="false" selection-start-line="194" selection-start-column="9" selection-end-line="194" selection-end-column="9" />
-          <folding>
-            <element signature="e#1#72#0" expanded="true" />
-            <marker date="1505159246202" expanded="true" signature="133:250" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sample.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="11" column="14" lean-forward="false" selection-start-line="11" selection-start-column="14" selection-end-line="11" selection-end-column="14" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -950,10 +927,59 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/agents/sparse_agent.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="45" column="13" lean-forward="false" selection-start-line="45" selection-start-column="13" selection-end-line="45" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#50#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/learners/baseline_learner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1680">
+          <caret line="104" column="0" lean-forward="true" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/agents/baseline_agent.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="256">
+          <caret line="61" column="0" lean-forward="true" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
+          <folding>
+            <element signature="e#2#52#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sample.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="11" column="12" lean-forward="false" selection-start-line="11" selection-start-column="12" selection-end-line="11" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/learners/sparse_learner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="194" column="9" lean-forward="false" selection-start-line="194" selection-start-column="9" selection-end-line="194" selection-end-column="9" />
+          <folding>
+            <element signature="e#1#72#0" expanded="true" />
+            <marker date="1505219858059" expanded="true" signature="133:250" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/menu_Experiment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="370">
-          <caret line="45" column="22" lean-forward="true" selection-start-line="45" selection-start-column="22" selection-end-line="45" selection-end-column="22" />
+        <state relative-caret-position="310">
+          <caret line="45" column="12" lean-forward="false" selection-start-line="45" selection-start-column="12" selection-end-line="45" selection-end-column="12" />
           <folding>
             <element signature="e#1#37#0" expanded="true" />
           </folding>

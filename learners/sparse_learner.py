@@ -17,7 +17,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
 
         self.num_features=5
         self.num_actions=1
-        self.kern_c = 1000
+        self.kern_c = 100
         self.state_dict = None
         self.cum_reward = np.array([])
         self.u_tilde=np.array([])
@@ -25,7 +25,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
         self.d=0.0
         self.v_inv=0.0
         self.c_tild=np.array([])
-        self.kern_sigma=1
+        self.kern_sigma=0.5
         self.dataset=None
         self.sigma = 1.0
         self.g=np.array([])
