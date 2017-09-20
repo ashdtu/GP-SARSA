@@ -10,7 +10,7 @@ class CTS_MazeTask(Task):
 
     def getReward(self):
         """ compute and return the current reward (i.e. corresponding to the last action performed) """
-        if (self.env.goal[0]-0.1<=self.env.perseus[0]<=self.env.goal[0]+0.1 and self.env.goal[1]-0.1<=self.env.perseus[1]<=self.env.goal[1]+0.1):
+        if (self.env.goal[0]-0.05<=self.env.perseus[0]<=self.env.goal[0]+0.05 and self.env.goal[1]-0.05<=self.env.perseus[1]<=self.env.goal[1]+0.05):
 
             reward = 10
         else:

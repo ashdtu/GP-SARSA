@@ -3,12 +3,12 @@ from matplotlib import pyplot as plt
 
 import numpy as np
 
-from environments.continous_maze_discrete_fixed import CTS_Maze
+from environments.continous_maze_discrete import CTS_Maze
 from tasks.CTS_TASK import CTS_MazeTask
 from pybrain.rl.experiments import EpisodicExperiment
 from learners.baseline_learner import GP_SARSA
 from agents.baseline_agent import GPSARSA_Agent
-env=CTS_Maze([0.50,0.50]) #goal
+env=CTS_Maze([0.40,0.40]) #goal
 
 task=CTS_MazeTask(env)
 learner=GP_SARSA(gamma=0.95)
@@ -24,20 +24,20 @@ performance=[]  #reward accumulation, dump variable for any evaluation metric
 sum=[]
 agent.reset()
 i=0
-for num_exp in range(10):
+for num_exp in range(100):
 
     performance=exp.doEpisodes(1)
     sum = np.append(sum, np.sum(performance))
 
-    if(num_exp%30==0):
-        agent.init_exploration-=agent.init_exploration*agent.exploration_decay
+    if(num_exp%10==0):
+        agent.init_exploration-=agent.init_exploration*0.10
 
     agent.learn()
-    print(np.sum(performance))
-    print(agent.history)
+    print('alpha',np.dot(learner.inv,learner.ret_reward().T))
+
     agent.reset()
 
-
+'''
 b=learner.ret_cov()
 
 a=learner.state_dict
@@ -55,7 +55,7 @@ cov_file=open('covar.txt','w')
 for item in range(a.shape[0]):
     thefile.write("%s\n" %a[item])
     cov_file.write("%s\n" %b[item])
-
+'''
 
 
 

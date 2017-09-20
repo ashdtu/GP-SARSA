@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 import time
 import numpy as np
 
-from environments.continous_maze_discrete_fixed import CTS_Maze
+from environments.continous_maze_discrete import CTS_Maze
 from tasks.CTS_TASK import CTS_MazeTask
 from pybrain.rl.experiments import EpisodicExperiment
 from learners.sparse_learner import GP_SARSA_SPARSE
@@ -20,7 +20,7 @@ track_time=[]
 dict_size=[]
 
 for repeat in range(1):
-    env = CTS_Maze([0.40, 0.40])  # goal
+    env = CTS_Maze([0.50,0.50])  # goal
 
     task = CTS_MazeTask(env)
     learner = GP_SARSA_SPARSE(gamma=0.95)
@@ -41,18 +41,23 @@ for repeat in range(1):
 
     b=[]
     c=[]
-    for num_exp in range(200):
+    for num_exp in range(600):
         performance=exp.doEpisodes(1)
         sum = np.append(sum, np.sum(performance))
 
-        agent.init_exploration=(10/(10+num_exp))
+        agent.init_exploration = (10 / (10 + num_exp))
         epsilon.append(agent.init_exploration)
-        agent.learn()
+        if(num_exp%10==0):
+            agent.learn()
+
+            agent.reset()
+
         dict_size=np.append(dict_size,learner.state_dict.shape[0])
         #track_time=np.append(track_time,[time.time()-starttime])
-
-        agent.reset()
         print(sum)
+
+
+
 
 
 

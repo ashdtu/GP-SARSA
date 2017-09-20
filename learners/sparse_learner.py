@@ -6,7 +6,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
     """
 
 
-    def __init__(self,gamma=0.99,threshold=0):
+    def __init__(self,gamma=0.99,threshold=5):
         ValueBasedLearner.__init__(self)
         self.thresh=threshold
 
@@ -15,9 +15,9 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
         self.laststate = None
         self.lastaction = None
 
-        self.num_features=5
+        self.num_features=2
         self.num_actions=1
-        self.kern_c = 100
+        self.kern_c = 10
         self.state_dict = None
         self.cum_reward = np.array([])
         self.u_tilde=np.array([])
@@ -41,7 +41,6 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
     def learn(self):
         self.delta_list = []
         for seq in self.dataset:
-
             self.laststate = None
             self.lastaction = None
             self.lastreward = None
@@ -51,7 +50,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
                 if self.laststate is None:
 
                     if self.state_dict is None:
-                        self.state_dict = np.reshape(np.append(state, action),(1,6))
+                        self.state_dict = np.reshape(np.append(state, action),(1,3))
                         self.K_inv = np.reshape([(1 / self.kernel(np.append(state, action), np.append(state, action)))],(1,1))
                         self.c = np.zeros(1)
                         self.k_tild=np.array([self.kernel(np.append(state,action),np.append(state, action))])
@@ -180,6 +179,8 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
             self.u_tilde = self.u_tilde + self.c_tild * self.d * self.v_inv
             min_temp=np.reshape(self.c_tild,(len(self.c_tild),1))
             self.C_tilde = self.C_tilde + self.v_inv * np.dot(min_temp,min_temp.T)
+            self.d=0
+            self.v_inv=0
 
 
 
@@ -196,7 +197,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
         return(self.kern_c*np.exp(-(np.sqrt(np.sum(np.subtract(state1,state2)**2))/(2*self.kern_sigma**2))))  #todo: if we use GPy kernel, product can't be multiplied
 
     def kernel(self,stat1,stat2):
-        return(self.state_kern(stat1[0:5],stat2[0:5])*self.action_kern(stat1[5],stat2[5]))
+        return(self.state_kern(stat1[0:2],stat2[0:2])*self.action_kern(stat1[2],stat2[2]))
 
     def ret_dict(self):
         return self.state_dict

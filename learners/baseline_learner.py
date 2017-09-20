@@ -17,16 +17,16 @@ class GP_SARSA(ValueBasedLearner):
         self.laststate = None
         self.lastaction = None
 
-        self.num_features=5
+        self.num_features=2
         self.num_actions=1
-        self.kern_c = 100
+        self.kern_c = 10
 
         self.covariance_mat=np.array([[]])
         self.inv=np.array([])
         self.state_dict = None
         self.cum_reward = np.array([])
         self.H=[]
-        self.kern_sigma=0.5
+        self.kern_sigma=0.2
         self.dataset=None
         self.sigma = 1
 
@@ -53,7 +53,7 @@ class GP_SARSA(ValueBasedLearner):
                     self.laststate = state
                     self.lastreward = reward
                     #self.covariance_list=np.array([self.kernel(np.append(self.laststate,self.lastaction),np.append(state,action))])
-                    self.state_dict = np.reshape(np.append(self.laststate, self.lastaction), (1, 6))
+                    self.state_dict = np.reshape(np.append(self.laststate, self.lastaction), (1, 3))
                     self.cum_reward = np.append(self.cum_reward, reward)
 
 
@@ -72,7 +72,7 @@ class GP_SARSA(ValueBasedLearner):
                     for element in range(self.state_dict.shape[0]):
                         self.covariance_list = np.append(self.covariance_list, [self.kernel(self.state_dict[element],np.append(state, action))])
                     self.covariance_list = np.reshape(self.covariance_list, (1, self.covariance_list.shape[0]))
-                    self.state_dict = np.append(self.state_dict, np.reshape(np.append(state, action), (1, 6)), axis=0)
+                    self.state_dict = np.append(self.state_dict, np.reshape(np.append(state, action), (1, 3)), axis=0)
 
                     self.covariance_mat = np.append(self.covariance_mat, self.covariance_list.transpose(), axis=1)
                     self.covariance_mat = np.vstack((self.covariance_mat, np.append(self.covariance_list, [self.kernel(np.append(state, action),np.append(state, action))])))
@@ -99,7 +99,7 @@ class GP_SARSA(ValueBasedLearner):
         return(self.kern_c*np.exp(-(np.sqrt(np.sum(np.subtract(state1,state2)**2))/(2*self.kern_sigma**2))))  #todo: if we use GPy kernel, product can't be multiplied
 
     def kernel(self,stat1,stat2):
-        return(self.state_kern(stat1[0:5],stat2[0:5])*self.action_kern(stat1[5],stat2[5]))
+        return(self.state_kern(stat1[0:2],stat2[0:2])*self.action_kern(stat1[2],stat2[2]))
 
 
     def q_init(self,inistate,iniaction):

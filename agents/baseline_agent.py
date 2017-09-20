@@ -2,8 +2,8 @@
 
 from pybrain.rl.agents.logging import LoggingAgent
 import random
-#from environments.continous_maze_discrete_fixed import SearchEnvironment
-from menu_model_short import SearchEnvironment
+from environments.continous_maze_discrete_fixed import CTS_Maze
+#from menu_model_short import CTS_Maze
 import numpy as np
 
 class GPSARSA_Agent(LoggingAgent):
@@ -14,7 +14,7 @@ class GPSARSA_Agent(LoggingAgent):
 
 
     def __init__(self, learner, **kwargs):
-        LoggingAgent.__init__(self,5,1, **kwargs)
+        LoggingAgent.__init__(self,2,1, **kwargs)
         self.learner = learner
         #self.reset()
         self.learning=True
@@ -27,7 +27,7 @@ class GPSARSA_Agent(LoggingAgent):
         self.q_mean=[]
         self.q_cov=[]
         i=0
-        for act in SearchEnvironment.actions :
+        for act in CTS_Maze.actions :
             self.K=[]
             for i in range(self.learner.ret_dict().shape[0]):
 
@@ -40,6 +40,7 @@ class GPSARSA_Agent(LoggingAgent):
 
         #print(self.q_mean[0])
         #print(self.q_cov[0])
+        print('mean',self.q_mean)
         return self.q_mean,self.q_cov
 
 
@@ -50,15 +51,15 @@ class GPSARSA_Agent(LoggingAgent):
         action=None
         if (self.learner.ret_dict() is not None):
             q_meanlist, q_covlist = self._actionProbs(self.lastobs)
-            if (random.random() > self.init_exploration):
-                action = SearchEnvironment.actions[np.argmax(q_meanlist)]
 
+            if (random.random() > self.init_exploration):
+                action = CTS_Maze.actions[np.argmax(q_meanlist)]
 
             else:
-                action = random.choice(SearchEnvironment.actions)
-                #action=SearchEnvironment.actions[np.argmax(q_covlist)]
+                action = random.choice(CTS_Maze.actions)
+                #action=CTS_Maze.actions[np.argmax(q_covlist)]
         else:
-            action=random.choice(SearchEnvironment.actions)
+            action=random.choice(CTS_Maze.actions)
 
         self.lastaction = action
         return action
