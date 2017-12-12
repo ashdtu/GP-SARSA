@@ -2,7 +2,7 @@
 from matplotlib import pyplot as plt
 import time
 import numpy as np
-from menu_model_short import SearchEnvironment
+from menu_model import SearchEnvironment
 from pomdp_task import SearchTask
 from pybrain.rl.experiments import EpisodicExperiment
 from learners.sparse_learner_menu import GP_SARSA_SPARSE
@@ -17,7 +17,7 @@ dict_size=[]
 
 for repeat in range(1):
     env = SearchEnvironment()  # goal
-    task = SearchTask(env,8)
+    task = SearchTask(env,10)
     learner = GP_SARSA_SPARSE(gamma=0.95)
     learner.sigma = 1
     learner.batchMode = False  # extra , not in use , set to True for batch learning
@@ -42,7 +42,7 @@ for repeat in range(1):
         performance=exp.doEpisodes(1)
         sum = np.append(sum, np.sum(performance))
         #if (num_exp % 50 == 0 and num_exp != 0):
-        agent.init_exploration -= agent.init_exploration * 0.05
+        agent.init_exploration -= agent.init_exploration * 0.1
         avg = np.mean(sum[num_exp-10:num_exp])
         print(np.sum(performance))
         #if(num_exp%10==0 and num_exp!=0):

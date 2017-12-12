@@ -20,28 +20,26 @@ class GPSARSA_Agent(LoggingAgent):
         self.learning=True
         self.learner.dataset=self.history
 
-
     def _actionProbs(self, state):
 
-
-        self.q_mean=[]
-        self.q_cov=[]
-        i=0
-        for act in CTS_Maze.actions :
-            self.K=[]
+        self.q_mean = []
+        self.q_cov = []
+        i = 0
+        for act in CTS_Maze.actions:
+            self.K = []
             for i in range(self.learner.ret_dict().shape[0]):
+                self.K = np.append(self.K, self.learner.kernel(self.learner.ret_dict()[i],np.append(state, act)))  # k(s,a) with previous sequence
+            self.K = np.reshape(self.K, (1, len(self.K)))
+            cum_reward = np.reshape(self.learner.ret_reward(), (len(self.learner.ret_reward()), 1))
+            #print('inv dot',np.dot(self.learner.inv,cum_reward))
+            self.q_mean = np.append(self.q_mean, np.dot(self.K, np.dot(self.learner.inv,cum_reward)))  # q mean list for every action
+            self.q_cov = np.append(self.q_cov,self.learner.kernel(np.append(state, act), np.append(state, act)) - np.dot(np.dot(self.K, self.learner.inv),np.dot(self.learner.ret_h(), self.K.T)))  # q_covariance for every action
 
-                self.K=np.append(self.K,self.learner.kernel(self.learner.ret_dict()[i],np.append(state,act))) #k(s,a) with previous sequence
+        print('max',max(self.q_mean))
+        print('min',min(self.q_mean))
+        # print(self.q_cov[0])
 
-            cum_reward=self.learner.ret_reward()
-
-            self.q_mean=np.append(self.q_mean,np.dot(np.dot(self.K,self.learner.inv),cum_reward.transpose())) #q mean list for every action
-            self.q_cov=np.append(self.q_cov,self.learner.kernel(np.append(state,act),np.append(state,act))-np.dot(np.dot(self.K,self.learner.inv),np.dot(self.learner.ret_h(),self.K))) #q_covariance for every action
-
-        #print(self.q_mean[0])
-        #print(self.q_cov[0])
-        print('mean',self.q_mean)
-        return self.q_mean,self.q_cov
+        return self.q_mean, self.q_cov
 
 
 
@@ -51,7 +49,6 @@ class GPSARSA_Agent(LoggingAgent):
         action=None
         if (self.learner.ret_dict() is not None):
             q_meanlist, q_covlist = self._actionProbs(self.lastobs)
-
             if (random.random() > self.init_exploration):
                 action = CTS_Maze.actions[np.argmax(q_meanlist)]
 

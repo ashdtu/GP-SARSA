@@ -73,7 +73,7 @@ class MenuItem():
 class SearchEnvironment():
     actions=range(0,10)   # No of actions= n_items + 2
     def __init__(self,
-            menu_type="unordered",
+            menu_type="semantic",
             menu_groups=2,
             menu_items_per_group=4,
             semantic_levels=3,

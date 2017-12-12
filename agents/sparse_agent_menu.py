@@ -1,6 +1,6 @@
 from pybrain.rl.agents.logging import LoggingAgent
 import random
-from menu_model_short import SearchEnvironment
+from menu_model import SearchEnvironment
 import numpy as np
 
 class GPSARSA_Agent(LoggingAgent):
