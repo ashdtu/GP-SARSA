@@ -60,7 +60,7 @@ class MenuItem():
 class SearchEnvironment():
     actions=range(0,6)   # No of actions= n_items + 2
     def __init__(self,
-            menu_type="unordered",
+            menu_type="semantic",
             menu_groups=1,
             menu_items_per_group=4,
             gap_between_items=0.75,
@@ -143,7 +143,7 @@ class SearchEnvironment():
             raise ValueError("Unknown menu type: {}".format(self.menu_type))
         target_present=(target_idx!=None)
 
-        length_relevances= np.random.beta(0.3,0.3,len(items))          #Length relevances, sampled as either relevant or non relevant
+        length_relevances= np.random.beta(0.3,0.3,len(items))          #Length of items,sampled from beta distribution
         target_len=1
 
         for i in range(len(length_relevances)):

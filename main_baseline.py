@@ -18,7 +18,7 @@ for repeat in range(1):
     #task=CTS_MazeTask(env)
     learner = GP_SARSA(gamma=0.95)
     learner.sigma = 1
-    learner.batchMode = False  # extra , not in use , set to True for batch learning
+    learner.batchMode = False  # ex3tra , not in use , set to True for batch learning
     agent = GPSARSA_Agent(learner)
     agent.logging = True
 

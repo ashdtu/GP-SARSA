@@ -46,9 +46,9 @@ class GPSARSA_Agent(LoggingAgent):
             q_meanlist, q_covlist = self._actionProbs(self.lastobs)
             #print('mean',q_meanlist)
             for some in q_meanlist:
-                if some>10000 or some<-16000:
-                    print('error',q_meanlist)
-                    #raise ValueError('wtf')
+                if some>10000 or some<-10000:
+                    #print('error',q_meanlist)
+                    raise ValueError('wtf')
             if (random.random() > self.init_exploration):
                 action = SearchEnvironment.actions[np.argmax(q_meanlist)]
 

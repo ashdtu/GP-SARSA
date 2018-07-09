@@ -37,19 +37,15 @@ class CTS_Maze(Environment, Named):
         temp_init=np.random.rand(2)
 
         if(not self.obstacle_fn(np.around(temp_init,decimals=2))):
-
             return temp_init
         else:
-
             self.free_state()
 
 
     def obstacle_fn(self,inp):
-
-        check=inp
         if(inp[0]<0 or inp[0]>1 or inp[1]<0 or inp[1]>1):
             return True
-        elif(0.60<=check[0]<=0.85 and 0.60<=check[1]<=0.85):
+        elif(0.60<=inp[0]<=0.85 and 0.60<=inp[1]<=0.85):
             return True
         else:
             return False

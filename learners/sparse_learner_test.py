@@ -10,6 +10,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
         ValueBasedLearner.__init__(self)
         self.thresh=threshold
         self.gamma = gamma
+
         self.laststate = None
         self.lastaction = None
 
@@ -19,7 +20,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
         self.state_dict = None
         self.cum_reward = np.array([])
         self.u_tilde=np.array([])
-        self.C_tilde=None
+        self.C_tilde=np.array([])
         self.d=0.0
         self.v_inv=0.0
         self.c_tild=np.array([])
@@ -27,12 +28,13 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
         self.dataset=None
         self.sigma = 1.0
         self.g=np.array([])
-        self.K_inv=np.array([[self.kern_c]])
+        self.K_inv=np.array([[]])
         self.k_tild=np.array([])
         self.k_tild_past=np.array([])
         self.delta=None
         self.delta_k=[]
         self.g_tilde=np.array([])
+
 
 
     def learn(self):
@@ -41,56 +43,58 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
             self.laststate = None
             self.lastaction = None
             self.lastreward = None
-
-            for state, action, reward in seq:
-
+            token=list(seq)
+            count=0
+            for state,action,reward in token:
                 if self.laststate is None:
 
                     if self.state_dict is None:
                         self.state_dict = np.reshape(np.append(state, action),(1,6))
-                        #self.K_inv = np.reshape([(1 / self.kernel(np.append(state, action), np.append(state, action)))],(1,1))
-                        #self.c = np.zeros(1)
-                        #self.k_tild=np.array([self.kernel(np.append(state,action),np.append(state, action))])
-                        #self.k_tild = self.k_tild.
+                        self.K_inv = np.reshape([(1 / self.kernel(np.append(state, action), np.append(state, action)))],(1,1))
+                        self.c = np.zeros(1)
+                        self.k_tild=np.array([self.kernel(np.append(state,action),np.append(state, action))])
+                        self.k_tild = self.k_tild.T
+                        self.d=0
+                        self.v_inv=0
 
-                        #self.g = np.dot(self.K_inv, self.k_tild)
-                        #self.delta = self.kernel(np.append(state,action),np.append(state, action)) - np.dot(self.k_tild.T, self.g)
-                        #self.delta=float(self.delta)
+                        self.g = np.dot(self.K_inv, self.k_tild)
+                        self.delta = self.kernel(np.append(state,action),np.append(state, action)) - np.dot(self.k_tild.T, self.g)
+                        self.delta=float(self.delta)
                         #print(self.delta)
-                        #self.g=np.reshape(self.g,(1,1))
+                        self.g=np.reshape(self.g,(1,1))
+                        self.u_tilde=np.zeros(1)
+                        self.C_tilde=np.zeros((1,1))
                         self.lastaction = action
                         self.laststate = state
                         self.lastreward = reward
+                        count+=1
+                        continue
 
-
-
-                    self.c = np.zeros(self.state_dict.shape[0])
-                    self.d=0
-                    self.v_inv=0
-                    self.k_tild=self.cov_list(state,action)
-                    self.g = np.dot(self.K_inv, self.k_tild)
-                    some_temp=self.g.copy()
-                    some_temp=some_temp.newaxis()
-                    self.delta = self.kernel(np.append(state, action), np.append(state, action)) - np.dot(self.k_tild.T,self.g)
-                    self.delta=float(self.delta)
-                    #print('here',self.delta)
-                    self.delta_list.append(self.delta)
-                    if (self.delta > self.thresh):
-                        self.state_dict=np.vstack((self.state_dict,np.append(state,action)))
-                        self.K_inv = np.hstack(((self.delta*self.K_inv + np.dot(some_temp,some_temp.T)), -some_temp))
-                        self.K_inv = np.vstack((self.K_inv, np.append(-some_temp.T, [1])))
-                        self.K_inv = self.K_inv * (1 / self.delta)
-                        self.g =np.append(np.zeros(self.state_dict.shape[0]-1),[1]).T
-                        self.u_tilde = np.append(self.u_tilde, [0])
-                        if(self.C_tilde is None):
-                            self.C_tilde=np.array([[0]])
-                        else:
+                    else:
+                        self.c = np.zeros(self.state_dict.shape[0])
+                        self.d=0
+                        self.v_inv=0
+                        self.k_tild=self.cov_list(state,action)
+                        self.g = np.dot(self.K_inv, self.k_tild)
+                        some_temp=np.reshape(self.g,(self.state_dict.shape[0],1))
+                        self.delta = self.kernel(np.append(state, action), np.append(state, action)) - np.dot(self.k_tild.T,self.g)
+                        self.delta=float(self.delta)
+                        #print('here',self.delta)
+                        self.delta_list.append(self.delta)
+                        if (self.delta > self.thresh):
+                            self.state_dict=np.vstack((self.state_dict,np.append(state,action)))
+                            self.K_inv = np.hstack(((self.delta*self.K_inv + np.dot(some_temp,some_temp.T)), -some_temp))
+                            self.K_inv = np.vstack((self.K_inv, np.append(-some_temp.T, [1])))
+                            self.K_inv = self.K_inv * (1 / self.delta)
+                            self.g =np.append(np.zeros(self.state_dict.shape[0]-1),[1]).T
+                            self.u_tilde = np.append(self.u_tilde, [0])
                             self.C_tilde = np.hstack((self.C_tilde, np.zeros((self.C_tilde.shape[0], 1))))
-                            self.C_tilde = np.vstack((self.C_tilde,np.zeros(self.C_tilde.shape[1])))
-                        self.c = np.append(self.c, [0])
+                            self.C_tilde = np.vstack((self.C_tilde,np.zeros(self.C_tilde.shape[1]))) #correction
+                            self.c = np.append(self.c, [0])
                         self.lastaction = action
                         self.laststate = state
                         self.lastreward = reward
+                        count+=1
                         continue
 
                 else:
@@ -105,10 +109,13 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
                     self.delta_list.append(self.delta)
                     self.delta_k=self.k_tild_past-self.gamma*self.k_tild
                     #print('delta',self.delta)
+                    if(count==len(token)-1):
+                        self.d = (self.gamma * self.sigma * self.v_inv * self.d) + reward - np.dot(self.delta_k, self.u_tilde)
+                        self.d = float(self.d)
+                    else:
 
-                    self.d=(self.gamma*self.sigma*self.v_inv*self.d) + reward -np.dot(self.delta_k,self.u_tilde)
-
-                    self.d=float(self.d)
+                        self.d=(self.gamma*self.sigma*self.v_inv*self.d) + self.lastreward -np.dot(self.delta_k,self.u_tilde)
+                        self.d=float(self.d)
                     #print('delta',self.delta)
                     if(self.delta>self.thresh):
                         self.state_dict = np.vstack((self.state_dict, np.append(state, action)))
@@ -129,19 +136,15 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
 
                         self.c_tild = (self.gamma * self.sigma * self.v_inv) * np.append(self.c, [0])
                         self.c_tild = self.c_tild + self.h_tilde.T - np.append(np.dot(self.C_tilde, self.delta_k), [0])
-                        print('c_tild',self.c_tild)
-                        print('beforev_inv',self.v_inv)
+
 
                         self.v_inv= -(self.gamma**2)*(self.sigma**2)*self.v_inv + (2 * self.gamma * self.v_inv * self.sigma)*np.dot(self.c,self.delta_k)
-                        print('one',self.v_inv)
-                        print(self.ktt)
                         self.v_inv+=self.ktt-np.dot(self.delta_k.T,np.dot(self.C_tilde,self.delta_k)) + (1+self.gamma**2)*self.sigma
-                        print('after',self.v_inv)
                         self.v_inv=float(self.v_inv)
                         self.v_inv=(1/self.v_inv)
-                        print('final',self.v_inv)
+
                         self.u_tilde=np.append(self.u_tilde,[0])
-                        print('u_before',self.u_tilde)
+
                         self.C_tilde=np.hstack((self.C_tilde,np.zeros((self.C_tilde.shape[0],1))))
                         self.C_tilde = np.vstack((self.C_tilde, np.zeros(self.C_tilde.shape[1])))
 
@@ -156,16 +159,16 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
                         self.v_inv = (1 / self.v_inv)
                         self.v_inv=float(self.v_inv)
 
-                print('d',self.d)
+
                 self.u_tilde = self.u_tilde + self.c_tild * self.d * self.v_inv
                 c_temp=np.reshape(self.c_tild,(len(self.c_tild),1))
                 self.C_tilde = self.C_tilde + self.v_inv * np.dot(c_temp,c_temp.T)
-                print('u after',self.u_tilde)
+
                 self.c=self.c_tild
                 self.g=self.g_tilde
                 self.laststate=state
                 self.lastaction=action
-                self.lastreward=reward
+                count+=1
 
                 #print('dict',self.state_dict.shape)
 
@@ -185,7 +188,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
             self.C_tilde = self.C_tilde + self.v_inv * np.dot(min_temp,min_temp.T)
             self.d=0
             self.v_inv=0
-            print(self.u_tilde)
+
 
 
 
@@ -218,6 +221,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
 
     def delta_fn(self):
         return self.delta_list
+
 
 
 

@@ -9,7 +9,6 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
     def __init__(self,gamma=0.99,threshold=5):
         ValueBasedLearner.__init__(self)
         self.thresh=threshold
-
         self.gamma = gamma
 
         self.laststate = None
@@ -44,9 +43,9 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
             self.laststate = None
             self.lastaction = None
             self.lastreward = None
-
-            for state, action, reward in seq:
-
+            token=list(seq)
+            count=0
+            for state,action,reward in token:
                 if self.laststate is None:
 
                     if self.state_dict is None:
@@ -68,6 +67,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
                         self.lastaction = action
                         self.laststate = state
                         self.lastreward = reward
+                        count+=1
                         continue
 
                     else:
@@ -94,6 +94,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
                         self.lastaction = action
                         self.laststate = state
                         self.lastreward = reward
+                        count+=1
                         continue
 
                 else:
@@ -108,8 +109,13 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
                     self.delta_list.append(self.delta)
                     self.delta_k=self.k_tild_past-self.gamma*self.k_tild
                     #print('delta',self.delta)
-                    self.d=(self.gamma*self.sigma*self.v_inv*self.d) + reward -np.dot(self.delta_k,self.u_tilde)
-                    self.d=float(self.d)
+                    if(count==len(token)-1):
+                        self.d = (self.gamma * self.sigma * self.v_inv * self.d) + reward - np.dot(self.delta_k, self.u_tilde)
+                        self.d = float(self.d)
+                    else:
+
+                        self.d=(self.gamma*self.sigma*self.v_inv*self.d) + self.lastreward -np.dot(self.delta_k,self.u_tilde)
+                        self.d=float(self.d)
                     #print('delta',self.delta)
                     if(self.delta>self.thresh):
                         self.state_dict = np.vstack((self.state_dict, np.append(state, action)))
@@ -162,6 +168,7 @@ class GP_SARSA_SPARSE(ValueBasedLearner):
                 self.g=self.g_tilde
                 self.laststate=state
                 self.lastaction=action
+                count+=1
 
                 #print('dict',self.state_dict.shape)
 

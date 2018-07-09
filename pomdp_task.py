@@ -1,5 +1,5 @@
 from pybrain.rl.environments.task import Task
-from menu_model import Click,Quit,Action,Focus,MenuItem
+from menu_model_short import Click,Quit,Action,Focus,MenuItem
 import numpy as np
 from scipy.stats import beta
 import copy
@@ -56,8 +56,11 @@ class SearchTask():
     def performAction(self, action):
         self.action = Action(int(action))
         self.prev_state = self.belief_state.copy()
+        #print('Focus before',self.env.Focus)
         self.env.duration_focus_ms, self.env.duration_saccade_ms = self.do_transition(self.prev_state,self.action)
-        print(self.env.Focus)
+        #print('focus after',self.env.Focus)
+        #print(self.env.click_status)
+        #print(self.env.quit_status)
         self.env.action_duration = self.env.duration_focus_ms + self.env.duration_saccade_ms
         self.env.gaze_location = int(self.env.Focus)
         self.env.n_actions += 1
@@ -124,7 +127,7 @@ class SearchTask():
         non_pm = [2.0, 5.0]
         absent = [1, 5]
         belief = prev_belief.copy()
-        '''
+
         for i in range(0, self.env.n_items + 1):
             if (i == focus_position):
                 belief[i] = beta.pdf(semantic_obs, t_pm[0], t_pm[1])*belief[i]
@@ -132,8 +135,11 @@ class SearchTask():
                 belief[i] = beta.pdf(semantic_obs, absent[0], absent[1])*belief[i]
             else:
                 belief[i] = beta.pdf(semantic_obs, non_pm[0], non_pm[1])*belief[i]
-        belief = np.reshape(belief,(1, self.env.n_items + 1))[0]
 
+        norm = sum(belief)
+        belief = belief / norm
+        #belief = np.reshape(belief,(1, self.env.n_items + 1))[0]
+        '''    
         if len(len_obs) == 0:
             norm = sum(belief)
             belief = belief/norm
@@ -156,21 +162,22 @@ class SearchTask():
             norm = sum(belief)
             belief = belief/norm
 
-        belief[belief<10**(-5)]=0
+        #belief[belief<10**(-4)]=0
+
+        #dump=[0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11]
         '''
-        dump=[0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11]
-        return dump
+        return belief
 
 
     def reset(self):
         self.env.reset()
         self.menu=self.env.getSensors()
-        print('menu',self.menu)
+        #print('menu',self.menu)
         self.belief_state=np.ones(self.env.n_items+1)
         self.belief_state=self.belief_state/(self.env.n_items+1)
 
     def getObservation(self):
-        print('belief state',self.belief_state)
+        #print('belief state',self.belief_state)
         return self.belief_state
 
 
